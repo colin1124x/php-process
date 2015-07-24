@@ -16,6 +16,11 @@ class Process
         $this->payload = $payload;
     }
 
+    public function pid()
+    {
+        return $this->pid;
+    }
+
     public function on($event, \Closure $callback)
     {
         if ( ! isset($this->events[$event])) $this->events[$event] = array();
@@ -24,22 +29,27 @@ class Process
         return $this;
     }
 
-    public function exec(\Closure $callback)
+    public function exec(\Closure $callback = null)
     {
+        $callback = $callback ?: function(){};
+
         // 開出子程序
-        $this->pid = pcntl_fork();
-        if (-1 === $this->pid) throw new \RuntimeException('無法使用 pcntl_fork!');
+        $pid = pcntl_fork();
+
+        if (-1 === $pid) throw new \RuntimeException('無法使用 pcntl_fork!');
 
         // fire event
 
-        if ($this->pid) {
+        if ($pid) {
+            $this->pid = $pid;
             $this->fire(self::EVENT_START);
-        } elseif (0 === $this->pid) {
+        } elseif (0 === $pid) {
             try {
                 $this->fire(self::EVENT_CHILD_WORK_START);
                 $work_result = call_user_func($this->work, $this->payload);
                 $callback($work_result);
                 $this->fire(self::EVENT_CHILD_WORK_END);
+
                 // 子程序順利結束
                 exit(0);
             } catch (\Exception $e) {
