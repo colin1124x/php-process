@@ -11,28 +11,35 @@ $pool = new ProcessPool();
 // 建構式傳入 Work process
 $process_1 = new Process(function($payload){
 
-    echo "\e[35m", 'p1 working...', "\e[m", PHP_EOL;
+    echo "\t\e[35m", 'p1 working...', "\e[m", PHP_EOL;
 
     // i am a long execute time worker
     sleep(10);
 
-    echo "\e[35m", 'p1 work finished!!', "\e[m", PHP_EOL;
+    echo "\t\e[35m", 'p1 work finished!!', "\e[m", PHP_EOL;
 
     return "Hello, {$payload}";
 
 }, 'word');
 
 $process_2 = new Process(function(){
+
+    echo "\t\e[35m", 'p2 working...', "\e[m", PHP_EOL;
+
     sleep(5);
+
+    echo "\t\e[35m", 'p2 work finished!!', "\e[m", PHP_EOL;
+
+    // no return
 });
 
 $process_1
     // 註冊程序啟動事件
     ->on(Process::EVENT_START, function(){echo "\e[33m", 'fork start:', __LINE__, "\e[m", PHP_EOL;})
     // 註冊工作開始事件
-    ->on(Process::EVENT_CHILD_WORK_START, function(){sleep(1);echo "\e[33m", 'p1 event: work start:', __LINE__, "\e[m", PHP_EOL;})
+    ->on(Process::EVENT_CHILD_WORK_START, function(){sleep(1);echo "\t\e[33m", 'p1 event: work start:', __LINE__, "\e[m", PHP_EOL;})
     // 註冊工作結束事件
-    ->on(Process::EVENT_CHILD_WORK_END, function(){echo "\e[33m", 'p1 event: work end:', __LINE__, "\e[m", PHP_EOL;});
+    ->on(Process::EVENT_CHILD_WORK_END, function(){echo "\t\e[33m", 'p1 event: work end:', __LINE__, "\e[m", PHP_EOL;});
 
 // 添加到程序池
 $pool->add($process_1);
@@ -44,8 +51,8 @@ $process_1->exec(function($result){
     echo ">>> p1 result [{$result}] <<<", PHP_EOL;
 });
 
-echo "\e[32m p1 pid = {$process_1->pid()}\e[m", PHP_EOL;
-echo "\e[32m p2 pid = {$process_2->pid()}\e[m", PHP_EOL;
+echo "\e[32mp1 pid = {$process_1->pid()}\e[m", PHP_EOL;
+echo "\e[32mp2 pid = {$process_2->pid()}\e[m", PHP_EOL;
 
 // 主程序繼續主要工作
 for ($i = 10; $i > 0; $i--) {
