@@ -1,0 +1,20 @@
+{
+    "name": "colin/process",
+    "description": "php 版子程序處理物",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Colin",
+            "email": "colin1124x@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Colin\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
