@@ -11,9 +11,12 @@
     "require": {
         "php": ">=5.3"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.7"
+    },
     "autoload": {
         "psr-4": {
-            "Colin\\": "src/"
+            "Colin\\Process\\": "src/"
         }
     },
     "minimum-stability": "dev"
